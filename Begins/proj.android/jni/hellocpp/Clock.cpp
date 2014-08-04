@@ -1,13 +1,9 @@
 #include "IncludeForCpp.h"
 #include "Clock.h"
-#include <thread>           //C++ 11 ���澶�绾跨��
 #include <iostream>
 
 #include "platform/android/jni/JniHelper.h"
 #include <jni.h>
-
-#include "SimpleAudioEngine.h"
-using namespace CocosDenshion;
 
 using namespace std;
 
@@ -17,15 +13,16 @@ MissionPool* _pool = NULL;
 Clock* Clock::getInstance(void)
 {
     if(pInstance == NULL){
-        pInstance = new Clock(xMissionPool);
+        pInstance = new Clock();
     }
     
 	return pInstance;
 }
 
-Clock::Clock(void* pool)
+Clock::Clock()
 {
-	init(pool);
+	_pool = xMissionPool;
+	startTiming();
 }
 
 
@@ -33,50 +30,12 @@ Clock::~Clock(void)
 {
 }
 
-static void* justAnotherTest(void *arg)   
-{   
-	int itime;
-#if TEST
-	itime = 5 * 1000;
-#else
-	itime = 5 * 1000;
-#endif
-
-	do 
-	{
-		//��ㄨ����������ユ�扮嚎绋�灏�瑕���ц�����浠ｇ��
-        std::this_thread::sleep_for(chrono::seconds(55));
-
-		Clock* pTime = (Clock*)arg;
-
-		pTime->timer(1.0f);
-	} while (false);
-
-    std::this_thread::sleep_for(chrono::seconds(120));
-
-	return NULL;   
-}
-
-
-bool Clock::init(void* pool)
+bool Clock::checkMission()
 {
-	_pool = (MissionPool*)pool;
-
-#ifdef IN_WINDOWS
-	CCDirector::getInstance()->getScheduler()->scheduleSelector(schedule_selector(Clock::timer), this, 15, false);
-#else
-	pthread_t tid;   
-	//pthread_create(&tid, NULL, &justAnotherTest, this);   
-#endif
-
-	return true;
-}
-
-void Clock::timer(float dt)
-{
-	CCLOG("update %f", dt);
 	_pool->handleRemind();
 	_pool->handleExpire();
+
+	return true;
 }
 
 void Clock::startTiming()
@@ -99,5 +58,4 @@ void Clock::startTiming()
     		methodInfo.env->CallVoidMethod(jobj, methodInfo.methodID);
     	}    	    	
     }
-
 }
