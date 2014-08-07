@@ -2,9 +2,7 @@
 #include "FrequencyScene.h"
 
 enum UITag {
-    MONDAY = 46,
-    SUNDAY = 48,
-    TUESDAY = 60,
+    MONDAY = 30,
 };
 
 
@@ -58,6 +56,24 @@ bool FrequencyScene::init()
 
 void FrequencyScene::back(void*)
 {
+    updateFrequency();
     xSM->back();
 }
 
+void FrequencyScene::updateFrequency()
+{
+    bool bFreq[7];
+    for (int i = 0; i < 7; i++) {
+        if (day[i]->getSelectedState()) {
+            bFreq[i] = true;
+        }
+        else
+        {
+            bFreq[i] = false;
+        }
+    }
+    
+    Mission *mission = xMissionPool->_vMissions.at(xMissionPool->_iTodayIdx);
+    
+    xDatabase->updateBlobByID((char*)bFreq, mission->iMissionID);
+}

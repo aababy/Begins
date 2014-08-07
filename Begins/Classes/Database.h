@@ -16,6 +16,7 @@ enum SQL_TAG
 	SQL_GetMissions,
 	SQL_GetExpire,
 	SQL_GetReminds,
+    SQL_GetWeekday,
 };
 
 
@@ -47,8 +48,8 @@ public:
     static Database* getInstance();
 
 	void CreateTable(void);
-	void insertMission(int id, int type, const char *name, Time &timeCreate, Time &timeRemind, Time &timeScore, const char * score, char * freq);
-    void insertBlob(char * freq, int id);
+	void insertMission(int type, const char *name, Time &timeCreate, Time &timeRemind, Time &timeScore, const char * score, char * freq, int len);
+    void insertBlob(char * freq, const char *name, int len);
 	void insertMission(Mission *miss, const char *szTableName = "mission");
 	void GetMissions(vector<Mission*> *vec);
 	void getReminds(vector<Mission*> *vec);
@@ -57,8 +58,7 @@ public:
 	int getScore();
 	void getExpire(vector<Mission*> *vec);
     void printError();
-
-	Log *_obLog;
+    void updateBlobByID(char * freq, int id);
 
 	//////////////////////////////////////////////////////////////////////////
 	bool execute(const char* format, ...);
@@ -68,6 +68,7 @@ public:
 	void deleteMission(int id);
 	void updateExpireTime(Mission *miss, int iDay);
 	void updateRemindTime(Mission *miss, int iDay);
+    int  getWeekday(char * date);
 	//////////////////////////////////////////////////////////////////////////
     
 private:
@@ -77,5 +78,6 @@ private:
 	bool		_initialized;
 	SQL_TAG		_eTag;
 	QUERY_P		_queryP;
+    int         m_iWeekday;
 };
 

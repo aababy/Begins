@@ -23,8 +23,6 @@ Database* Database::getInstance()
 
 Database::Database()
 {
-	_obLog = xLog;
-
 #if (CC_TARGET_PLATFORM == CC_PLATFORM_WIN32)
 	_rc = sqlite3_open("c://database.db", &_db);
 #else
@@ -79,17 +77,44 @@ void Database::CreateTable(void)
 }
 
 
-void Database::insertMission(int id, int type, const char *name, Time &timeCreate, Time &timeRemind, Time &timeScore, const char * score, char * freq)
+void Database::insertMission(int type, const char *name, Time &timeCreate, Time &timeRemind, Time &timeScore, const char * score, char * freq, int len)
 {
-	execute("insert into mission(missionid, type, missionname, crtime, retime, sctime, score, frequency) \
-			values(null, %d, %Q, datetime(%Q), datetime(%Q), datetime(%Q), %q, null)",
+	execute("insert into mission(missionid, type, missionname, crtime, retime, sctime, score) \
+			values(null, %d, %Q, datetime(%Q), datetime(%Q), datetime(%Q), %q)",
 			type, name, timeCreate.str.c_str(), timeRemind.str.c_str(), timeScore.str.c_str(), score);
     
     //执行完后单独插入 blob
-    insertBlob(freq, id);
+    insertBlob(freq, name, len);
 }
 
-void Database::insertBlob(char * freq, int id)
+void Database::insertBlob(char * freq, const char *name, int len)
+{
+    sqlite3_stmt* pStmt = NULL;
+    const char* sql = "UPDATE mission SET frequency = ? where missionname = ?";
+    
+    //int nRtn = sqlite3_prepare(_db, "insert into mission values ('mmmm.rar',?);", -1, &pStmt, 0);
+    int nRtn = sqlite3_prepare_v2(_db, sql, -1, &pStmt, NULL);
+    
+    if (nRtn == SQLITE_OK)
+    {
+        nRtn = sqlite3_bind_blob(pStmt, 1, freq, sizeof(bool)*7, SQLITE_STATIC);
+        if (nRtn == SQLITE_OK)
+        {
+            nRtn = sqlite3_bind_text(pStmt, 2, name, len, SQLITE_STATIC);
+            
+            nRtn = sqlite3_step(pStmt);
+            if (nRtn == SQLITE_DONE)
+            {
+                CCLOG("insert succ!/n");
+            }
+        }
+        sqlite3_finalize(pStmt);
+    }
+
+}
+
+
+void Database::updateBlobByID(char * freq, int id)
 {
     sqlite3_stmt* pStmt = NULL;
     const char* sql = "UPDATE mission SET frequency = ? where missionid = ?";
@@ -97,10 +122,9 @@ void Database::insertBlob(char * freq, int id)
     //int nRtn = sqlite3_prepare(_db, "insert into mission values ('mmmm.rar',?);", -1, &pStmt, 0);
     int nRtn = sqlite3_prepare_v2(_db, sql, -1, &pStmt, NULL);
     
-    CCLOG("%s", sqlite3_errmsg(_db));
     if (nRtn == SQLITE_OK)
     {
-        nRtn = sqlite3_bind_blob(pStmt, 1, freq, sizeof(bool)*7, NULL);
+        nRtn = sqlite3_bind_blob(pStmt, 1, freq, sizeof(bool)*7, SQLITE_STATIC);
         if (nRtn == SQLITE_OK)
         {
             nRtn = sqlite3_bind_int(pStmt, 2, id);
@@ -113,8 +137,9 @@ void Database::insertBlob(char * freq, int id)
         }
         sqlite3_finalize(pStmt);
     }
-
+    
 }
+
 
 void Database::GetMissions(vector<Mission*> *vec)
 {
@@ -280,6 +305,11 @@ int Database::onQuery(void *pData, int argc, char* value[], char* table_name[])
 			vec->push_back(miss);
 		}
 		break;
+    case SQL_GetWeekday:
+        {
+            self->m_iWeekday = (int)atoi(value[0]);
+        }
+        break;
 	default:
 		break;
 	}
@@ -333,6 +363,25 @@ void Database::updateRemindTime(Mission *miss, int iDay)
 void Database::printError()
 {
     CCLOG("%s", sqlite3_errmsg(_db));
+}
+
+int Database::getWeekday(char * date)
+{
+    char *errmsg = NULL;
+    char *sql = "select strftime('%w','2006-10-17 00:20:00','localtime')";
+    
+    _eTag = SQL_GetWeekday;
+    
+	int _rc = sqlite3_exec(_db, sql, Database::onQuery, &_queryP, &errmsg);
+    
+	//错误处理
+	if(_rc != SQLITE_OK) {
+		CCLOG("ERROR %s fail with msg: %s", sql, errmsg);
+	}
+    
+	sqlite3_free(errmsg);
+	sqlite3_free(sql);
+	return m_iWeekday;
 }
 
 

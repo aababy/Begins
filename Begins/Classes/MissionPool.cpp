@@ -47,26 +47,29 @@ void MissionPool::getMission()
 }
 
 
-void MissionPool::handleRemind()
+bool MissionPool::checkRemind()
 {
 	//1. 查询是否有任务需要提醒
 	clean(_vReminds);
 	_db->getReminds(&_vReminds);
 
-	//2. 如果有, 播放声音, 震动
+	//2. 如果有, 更新提醒
 	if (_vReminds.size() != 0)
 	{
-		//播放声音, 震动
-		//TBD
-
-		//如果在前台, 提醒对话框, 
+		//如果在前台, 提醒对话框,
 		if (!CCDirector::getInstance()->isPaused())
 		{
 			CCNotificationCenter::sharedNotificationCenter()->postNotification(REMIND_MSG, (Ref*)this);
 		}
 
 		updateRemind();
+        
+        return true;
 	}
+    else
+    {
+        return false;
+    }
 }
 
 

@@ -85,10 +85,16 @@ void NewScene::onDialog(int id, DialogTag tag)
         //插入普通任务
         bool bFreq[7];
         for (int i = 0; i < 7; i++) {
-            bFreq[i] = false;
+            if (pMission->eType == MISSION_NORMAL) {
+                bFreq[i] = false;
+            }
+            else
+            {
+                bFreq[i] = true;
+            }
         }
         
-        xDatabase->insertMission(0, pMission->eType, missionNameTxt->getStringValue().c_str(), ctime, rtime, stime, scoreTxt->getStringValue().c_str(), (char*)bFreq);
+        xDatabase->insertMission(pMission->eType, missionNameTxt->getStringValue().c_str(), ctime, rtime, stime, scoreTxt->getStringValue().c_str(), (char*)bFreq, missionNameTxt->getStringValue().length());
         
         xSM->back();
     } else {

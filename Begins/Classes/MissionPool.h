@@ -23,7 +23,7 @@ public:
 	~MissionPool(void);
 	void clean(vector<Mission*> &vec);
 	void getMission();
-	void handleRemind();
+	bool checkRemind();
 	int getScore();
 	void handleExpire();
 	void updateRemind();

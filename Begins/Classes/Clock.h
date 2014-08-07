@@ -13,7 +13,6 @@ class Clock
 public:
     static Clock* getInstance();
 	bool checkMission();
-
 private:
     Clock();
 	~Clock(void);

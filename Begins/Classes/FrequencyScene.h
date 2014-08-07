@@ -9,6 +9,7 @@ public:
     bool init();
     CREATE_FUNC(FrequencyScene);
     void back(void*);
+    void updateFrequency();
         
 protected:
     Layer*      _uiLayer;
