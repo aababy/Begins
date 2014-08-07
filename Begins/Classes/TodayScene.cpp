@@ -59,24 +59,37 @@ bool TodayScene::init()
         listView->setItemModel(default_item);
         
         CCLOG("%lu", xMissionPool->_vMissions.size());
-        // add default item
-        for (int i = 0; i < xMissionPool->_vMissions.size(); ++i)
-        {
-            listView->pushBackDefaultItem();
-        }
-        updateList();
+
+        updateList(NULL);
+        
+        CCNotificationCenter::getInstance()->addObserver(this, callfuncO_selector(TodayScene::updateList), REMIND_MSG, NULL);
+        CCNotificationCenter::getInstance()->addObserver(this, callfuncO_selector(TodayScene::updateList), EXPIRE_MSG, NULL);
         
         return true;
     }
     return false;
 }
 
-void TodayScene::updateList()
+TodayScene::~TodayScene()
 {
+    CCNotificationCenter::getInstance()->removeAllObservers(this);
+}
+
+void TodayScene::updateList(Ref *pSender)
+{
+    listView->removeAllItems();
+    
+    // add default item
+    for (int i = 0; i < xMissionPool->_vMissions.size(); ++i)
+    {
+        listView->pushBackDefaultItem();
+    }
+    
     Vector<Widget*> items = listView->getItems();
     
     for (int i = 0; i < items.size(); i++) {
         Layout * bg = (Layout*)items.at(i);
+        bg->setBackGroundColorType(LAYOUT_COLOR_SOLID);
         
         if (i % 2 == 0) {
             bg->setBackGroundColor(Color3B(39, 10, 34));

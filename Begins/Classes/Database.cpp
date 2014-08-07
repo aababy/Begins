@@ -256,11 +256,8 @@ bool Database::query( SQL_TAG eTag, void* pData, const char* format, ... )
 	va_end(ap);
 		
 	//执行sql
-	if (pData != NULL)
-	{
-		_eTag = eTag;
-		_queryP.pData = pData;
-	}
+    _eTag = eTag;
+	_queryP.pData = pData;
 
 	_rc = sqlite3_exec(_db, sql, Database::onQuery, &_queryP, &errmsg);
 
@@ -365,22 +362,16 @@ void Database::printError()
     CCLOG("%s", sqlite3_errmsg(_db));
 }
 
-int Database::getWeekday(char * date)
+int Database::getWeekday(string& date)
 {
-    char *errmsg = NULL;
-    char *sql = "select strftime('%w','2006-10-17 00:20:00','localtime')";
+    char temp[100];
+    sprintf(temp, "'%s','localtime')", date.c_str());
     
-    _eTag = SQL_GetWeekday;
+    string sTemp = "select strftime('%w', ";
+    sTemp+=temp;
     
-	int _rc = sqlite3_exec(_db, sql, Database::onQuery, &_queryP, &errmsg);
+    query(SQL_GetWeekday, NULL, sTemp.c_str(), NULL);
     
-	//错误处理
-	if(_rc != SQLITE_OK) {
-		CCLOG("ERROR %s fail with msg: %s", sql, errmsg);
-	}
-    
-	sqlite3_free(errmsg);
-	sqlite3_free(sql);
 	return m_iWeekday;
 }
 

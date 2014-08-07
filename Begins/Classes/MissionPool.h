@@ -28,6 +28,7 @@ public:
 	void handleExpire();
 	void updateRemind();
 	void endMission(int idx, ACTION_BY eAction);
+    void removeMission(Mission *miss);
 	int _iTodayIdx;
 	vector <Mission *> _vMissions;		//这个vector通常有很多条
 	vector <Mission *> _vReminds;		//这个通常只有几条

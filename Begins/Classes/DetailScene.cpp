@@ -78,7 +78,8 @@ void DetailScene::onButton(Ref *pSender, TouchEventType type)
             break;
         case CANCEL:
         {
-            //TODO
+            Mission *mission = xMissionPool->_vMissions.at(xMissionPool->_iTodayIdx);
+            xMissionPool->removeMission(mission);
         }
             break;
         case FREQUENCY:

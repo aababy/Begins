@@ -68,7 +68,7 @@ public:
 	void deleteMission(int id);
 	void updateExpireTime(Mission *miss, int iDay);
 	void updateRemindTime(Mission *miss, int iDay);
-    int  getWeekday(char * date);
+    int  getWeekday(string& date);
 	//////////////////////////////////////////////////////////////////////////
     
 private:

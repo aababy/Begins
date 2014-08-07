@@ -57,12 +57,9 @@ bool MissionPool::checkRemind()
 	if (_vReminds.size() != 0)
 	{
 		//如果在前台, 提醒对话框,
-		if (!CCDirector::getInstance()->isPaused())
-		{
-			CCNotificationCenter::sharedNotificationCenter()->postNotification(REMIND_MSG, (Ref*)this);
-		}
-
 		updateRemind();
+        
+        xMTNotify->postNotification(REMIND_MSG, NULL);
         
         return true;
 	}
@@ -86,14 +83,31 @@ void MissionPool::updateRemind()
 			break;
 		case MISSION_DAILY:
 			{
-				_db->updateRemindTime(_vReminds.at(i), 1);
+                //获得今天是星期几
+                Mission *mission = _vReminds.at(i);
+                int iWeekdayOfNext = _db->getWeekday(mission->_reTime.str);        //0表示星期天, 让0表示星期一, 所以得到的就是明天的值
+
+                //查找离自己最近的一个有提醒的星期
+                int iDiffer = 1;
+                for (int i = 0; i < 7; i++) {
+                    if (mission->bFrequency[iWeekdayOfNext] == true) {
+                        break;
+                    }
+                    else
+                    {
+                        cycleNum(true, 7, &iWeekdayOfNext);
+                        iDiffer++;
+                    }
+                }
+                
+                //根据差值, 决定增加的天数
+				_db->updateRemindTime(_vReminds.at(i), iDiffer);
 			}
 			break;
 		default:
 			break;
 		}
 	}
-	
 }
 
 
@@ -117,6 +131,8 @@ void MissionPool::handleExpire()
 		{
 			endMission(i, BY_EXPIRE);
 		}
+        
+        xMTNotify->postNotification(EXPIRE_MSG, NULL);
 	}
 }
 
@@ -150,6 +166,27 @@ void MissionPool::endMission(int idx, ACTION_BY eAction)
 	} 
 	else if(miss->eType == MISSION_DAILY)
 	{
-		_db->updateExpireTime(miss, 1);
+        //获得今天是星期几
+        int iWeekdayOfNext = _db->getWeekday(miss->_scTime.str);        //0表示星期天, 让0表示星期一, 所以得到的就是明天的值
+        
+        //查找离自己最近的一个有提醒的星期
+        int iDiffer = 1;
+        for (int i = 0; i < 7; i++) {
+            if (miss->bFrequency[iWeekdayOfNext] == true) {
+                break;
+            }
+            else
+            {
+                cycleNum(true, 7, &iWeekdayOfNext);
+                iDiffer++;
+            }
+        }
+        
+		_db->updateExpireTime(miss, iDiffer);
 	}
+}
+
+void MissionPool::removeMission(Mission *miss)
+{
+    _db->deleteMission(miss->iMissionID);
 }

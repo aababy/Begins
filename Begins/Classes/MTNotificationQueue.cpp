@@ -49,16 +49,23 @@ public:
 
 MTNotificationQueue* MTNotificationQueue::sm_pInstance = NULL;
 
-MTNotificationQueue* MTNotificationQueue::getInstance() {
+MTNotificationQueue* MTNotificationQueue::getInstance()
+{
 	if (!sm_pInstance) {
 		sm_pInstance = new MTNotificationQueue();
 	}
 	return sm_pInstance;
 }
 
-MTNotificationQueue::MTNotificationQueue() {}
+MTNotificationQueue::MTNotificationQueue()
+{
+    CCDirector::getInstance()->getScheduler()->scheduleUpdateForTarget(this, 0, false);
+}
 
-MTNotificationQueue::~MTNotificationQueue() {}
+MTNotificationQueue::~MTNotificationQueue()
+{
+    CCDirector::getInstance()->getScheduler()->unscheduleUpdateForTarget(this);
+}
 
 void MTNotificationQueue::postNotifications(float in_fDeltaTime) {
     LifeCircleMutexLock(&sharedNotificationQueueLock);
@@ -85,4 +92,10 @@ void MTNotificationQueue::postNotification(const char* in_pArrCharName, Ref* in_
     }
     
     m_oVecNotifications.push_back(t_oNotiArgs);
+}
+
+
+void MTNotificationQueue::update(float dt)
+{
+    postNotifications(dt);
 }

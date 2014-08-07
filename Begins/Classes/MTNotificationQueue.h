@@ -16,12 +16,6 @@
 using namespace cocos2d;
 using namespace std;
 
-#define NC_Dialog       "ShowDialog"
-#define NC_SystemBusy   "SystemBusy"
-#define NC_ShareSuccess "ShareSuccess"
-#define NC_ShareFinish  "ShareFinish"
-
-
 #define xMTNotify      (MTNotificationQueue::getInstance())
 
 
@@ -34,6 +28,8 @@ public:
     void postNotifications(float in_fDeltaTime);
     
     void postNotification(const char* in_pArrCharName, Ref* in_pCcObj);
+    
+    void update(float dt);
     
 private:
     

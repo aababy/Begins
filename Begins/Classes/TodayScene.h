@@ -6,13 +6,14 @@ class TodayScene : public Layer
 {
 public:
     static Scene* createScene();
+    ~TodayScene();
     bool init();
     CREATE_FUNC(TodayScene);
     
     void forwardToNewScene(void *);
     
 protected:
-    void updateList();
+    void updateList(Ref *pSender);
     void selectedItemEvent(Ref *pSender, ListViewEventType type);
     // a selector callback
     //void menuCloseCallback(Ref* pSender, TouchEventType type);

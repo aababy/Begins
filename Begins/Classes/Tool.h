@@ -10,3 +10,4 @@ Time getCurrentTime();
 Time str2MTime(const string &str);
 Time str2MTimeForDB(const string &str);
 string getShowTime(Time &mtime);
+int cycleNum(bool bAdd, int iCount, int *idx);

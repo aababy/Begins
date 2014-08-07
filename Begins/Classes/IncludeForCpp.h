@@ -27,6 +27,7 @@
 #include "SceneManager.h"
 #include "XmlData.h"
 #include "Dialog.h"
+#include "MTNotificationQueue.h"
 
 #include "TodayScene.h"
 #include "NewScene.h"

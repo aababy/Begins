@@ -25,7 +25,7 @@ void startTiming(Clock *clock)
 	do
 	{
 		//在这里写入新线程将要执行的代码
-        std::this_thread::sleep_for(chrono::seconds(60));
+        std::this_thread::sleep_for(chrono::seconds(10));
 
         clock->checkMission();
 	} while (true);
@@ -46,7 +46,7 @@ Clock::~Clock()
 bool Clock::checkMission()
 {
 	CCLOG("ok for ios");
-	_pool->handleRemind();
+	_pool->checkRemind();
 	_pool->handleExpire();
     
     return true;

@@ -168,6 +168,13 @@ Time str2MTimeForDB(const string &str)
     
 	mtime.second = 0;
     
+    char temp[30];
+    
+	sprintf(temp, "%04d-%02d-%02d %02d:%02d:%02d",
+            mtime.year, mtime.month, mtime.day, mtime.hour, mtime.minute, mtime.second);
+    
+	mtime.str = string(temp);
+    
 	return mtime;
 }
 
@@ -181,3 +188,30 @@ string getShowTime(Time &mtime)
 	return string(temp);
 }
 
+int cycleNum(bool bAdd, int iCount, int *idx)
+{
+    if (bAdd == true)
+    {
+        if (*idx >= iCount - 1)
+        {
+            *idx = 0;
+        }
+        else
+        {
+            (*idx)++;
+        }
+    }
+    else if (bAdd == false)
+    {
+        if ((*idx) <= 0)
+        {
+            (*idx) = iCount - 1;
+        }
+        else
+        {
+            (*idx)--;
+        }
+    }
+    
+    return (*idx);
+}

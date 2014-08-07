@@ -35,6 +35,9 @@ bool AppDelegate::applicationDidFinishLaunching() {
     glview->setDesignResolutionSize(designSize.width, designSize.height, ResolutionPolicy::SHOW_ALL);
 #endif
     
+    //初始化时钟
+    xClock;
+    
     // create a scene. it's an autorelease object
     xSM->forward(SCENE_TODAY);
 
