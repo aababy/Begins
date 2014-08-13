@@ -54,7 +54,7 @@ bool TodayScene::init()
         listView->addEventListenerListView(this, listvieweventselector(TodayScene::selectedItemEvent));
         
         Layout* default_item = dynamic_cast<Layout*>(cocostudio::GUIReader::getInstance()->widgetFromJsonFile("Scenes/ListCell.ExportJson"));
-        default_item->setBackGroundColorType(LAYOUT_COLOR_SOLID);
+        //default_item->setBackGroundColorType(LAYOUT_COLOR_SOLID);
         // set model
         listView->setItemModel(default_item);
         
@@ -89,13 +89,13 @@ void TodayScene::updateList(Ref *pSender)
     
     for (int i = 0; i < items.size(); i++) {
         Layout * bg = (Layout*)items.at(i);
-        bg->setBackGroundColorType(LAYOUT_COLOR_SOLID);
-        
-        if (i % 2 == 0) {
-            bg->setBackGroundColor(Color3B(39, 10, 34));
-        } else {
-            bg->setBackGroundColor(Color3B(39, 40, 10));
-        }
+//        bg->setBackGroundColorType(LAYOUT_COLOR_SOLID);
+//        
+//        if (i % 2 == 0) {
+//            bg->setBackGroundColor(Color3B(39, 10, 34));
+//        } else {
+//            bg->setBackGroundColor(Color3B(39, 40, 10));
+//        }
      
         Text * labName = (Text*)bg->getChildByTag(2);
         Text * labTime = (Text*)bg->getChildByTag(3);

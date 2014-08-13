@@ -4,9 +4,17 @@
 JNIEXPORT jboolean JNICALL Java_org_cocos2dx_cpp_AlarmReceiver_checkMission
   (JNIEnv *, jobject)
 {
-    unsigned char ret = 1;
+    unsigned char ret;
     
-    CCLOG("ok");
+    //µ÷ÓÃClockµÄcheckMission
+    if(xClock->checkMission())
+    {
+    	ret = 1;
+    }
+    else
+    {
+    	ret = 0;
+    }
     
     return (jboolean)ret;
 }

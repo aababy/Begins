@@ -8,6 +8,7 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 
 public class MainActivity extends Activity {
@@ -48,6 +49,7 @@ public class MainActivity extends Activity {
         //如果需要重复执行，使用上面一行的setRepeating方法，倒数第二参数为间隔时间,单位为毫秒
         
         startTiming();
+        Log.e("new", "00");
     }
 
     //
@@ -58,6 +60,8 @@ public class MainActivity extends Activity {
         //设置一个PendingIntent对象，发送广播            
         AlarmManager am = (AlarmManager)getSystemService(ALARM_SERVICE);
         am.setRepeating(AlarmManager.RTC_WAKEUP, System.currentTimeMillis(), 60*1000, pi);
+        
+        Log.e("new", "111");
     }
     
     @Override

@@ -11,6 +11,8 @@
 
 static Clock* pInstance = NULL;
 
+void timing(Clock *clock);
+
 Clock* Clock::getInstance(void)
 {
     if(pInstance == NULL){
@@ -20,7 +22,39 @@ Clock* Clock::getInstance(void)
 	return pInstance;
 }
 
-void startTiming(Clock *clock)
+
+bool Clock::checkMission()
+{
+	CCLOG("ok for ios");
+	_pool->checkRemind();
+	_pool->handleExpire();
+    
+    return true;
+}
+
+
+Clock::Clock()
+{
+    _pool = xMissionPool;
+    startTiming();
+}
+
+
+Clock::~Clock()
+{
+    
+}
+
+
+void Clock::startTiming()
+{
+    //创建单独的计时线程
+    std::thread t(timing, this);
+    t.detach();
+}
+
+
+void timing(Clock *clock)
 {
 	do
 	{
@@ -31,24 +65,6 @@ void startTiming(Clock *clock)
 	} while (true);
 }
 
-Clock::Clock()
-{
-    _pool = xMissionPool;
-    //创建单独的计时线程
-    std::thread t(startTiming, this);
-    t.detach();
-}
 
-Clock::~Clock()
-{
-}
 
-bool Clock::checkMission()
-{
-	CCLOG("ok for ios");
-	_pool->checkRemind();
-	_pool->handleExpire();
-    
-    return true;
-}
 

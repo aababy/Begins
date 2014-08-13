@@ -16,6 +16,7 @@ public:
 private:
     Clock();
 	~Clock(void);
+    void startTiming();
     
     MissionPool *_pool;
 };

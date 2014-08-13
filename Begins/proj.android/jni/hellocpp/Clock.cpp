@@ -19,6 +19,17 @@ Clock* Clock::getInstance(void)
 	return pInstance;
 }
 
+
+bool Clock::checkMission()
+{
+	bool bRet = _pool->checkRemind();
+
+	_pool->handleExpire();
+
+	return bRet;
+}
+
+
 Clock::Clock()
 {
 	_pool = xMissionPool;
@@ -30,16 +41,11 @@ Clock::~Clock(void)
 {
 }
 
-bool Clock::checkMission()
-{
-	_pool->handleRemind();
-	_pool->handleExpire();
-
-	return true;
-}
 
 void Clock::startTiming()
 {
+	return;
+
     JniMethodInfo methodInfo;
     jobject jobj;
 

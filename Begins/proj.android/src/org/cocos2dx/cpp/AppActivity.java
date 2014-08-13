@@ -33,6 +33,8 @@ import android.app.PendingIntent;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.util.Log;
+import android.widget.Toast;
 
 
 public class AppActivity extends Cocos2dxActivity {
@@ -41,7 +43,7 @@ public class AppActivity extends Cocos2dxActivity {
      * 保存当前Activity实例， 静态变量
      */
 	private static Context context = null;
-    
+	
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
     	super.onCreate(savedInstanceState);
